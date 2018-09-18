@@ -30,5 +30,9 @@ public class ShortenerController {
         return url;
     }
 
+    @GetMapping("/get-env/{envName}")
+    public String getEnv(@PathVariable String envName){
+        return System.getenv(envName);
+    }
 
 }
