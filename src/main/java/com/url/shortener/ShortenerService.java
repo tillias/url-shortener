@@ -11,6 +11,8 @@ import org.apache.commons.validator.routines.UrlValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class ShortenerService {
 
@@ -31,6 +33,11 @@ public class ShortenerService {
         } else {
             throw new UrlValidationException("Invalid source url is provided");
         }
+    }
+
+    public Url getUrlByID(String id) {
+        final Optional<Url> url = repository.findById(id);
+        return url.orElse(null);
     }
 
     private Url process(String sourceUrl) {
