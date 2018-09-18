@@ -11,6 +11,8 @@ import org.apache.commons.validator.routines.UrlValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -35,9 +37,15 @@ public class ShortenerService {
         }
     }
 
+    public List<Url> getUrls() {
+        final List<Url> urls = repository.findAll();
+        urls.forEach(this::enrichWithShortcut);
+        return urls;
+    }
+
     public Url getUrlByID(String id) {
         final Optional<Url> url = repository.findById(id);
-        return url.orElse(null);
+        return enrichWithShortcut(url.orElse(null));
     }
 
     private Url process(String sourceUrl) {
@@ -71,8 +79,7 @@ public class ShortenerService {
                     "amount of time. Attempted %s times", iteration));
         }
 
-        final String shortcut = config.getPrefix() + digest;
-        return new Url(digest, sourceUrl, shortcut);
+        return enrichWithShortcut(new Url(digest, sourceUrl));
     }
 
     private String generateRandomHash(UniformRandomProvider rnd, Base62 base62) {
@@ -84,5 +91,14 @@ public class ShortenerService {
 
         final String longHash = new String(encodedBytes);
         return StringUtils.substring(longHash, 0, config.getLength());
+    }
+
+    private Url enrichWithShortcut(Url source) {
+        if (source == null) {
+            return null;
+        }
+
+        source.setShortcut(config.getPrefix() + source.getId());
+        return source;
     }
 }

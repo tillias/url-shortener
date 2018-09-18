@@ -2,6 +2,7 @@ package com.url.shortener;
 
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 
 public class Url {
 
@@ -9,12 +10,13 @@ public class Url {
     private String id;
 
     private String sourceUrl;
+
+    @Transient
     private String shortcut;
 
-    public Url(String id, String sourceUrl, String shortcut) {
+    public Url(String id, String sourceUrl) {
         this.id = id;
         this.sourceUrl = sourceUrl;
-        this.shortcut = shortcut;
     }
 
     public String getId() {

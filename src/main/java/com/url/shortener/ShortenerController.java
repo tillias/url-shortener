@@ -4,6 +4,8 @@ import com.url.shortener.infrastructure.UrlNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class ShortenerController {
 
@@ -17,6 +19,12 @@ public class ShortenerController {
     @PostMapping("/shorten-url")
     public Url shortenUrl(@RequestBody String source){
         return service.shorten(source);
+    }
+
+    @GetMapping("/url")
+    public List<Url> getUrls()
+    {
+        return service.getUrls();
     }
 
     @GetMapping("/url/{id}")
