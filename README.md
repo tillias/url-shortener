@@ -1,0 +1,1 @@
+[![Build Status](https://travis-ci.com/tillias/url-shortener.svg?branch=master)](https://travis-ci.com/tillias/url-shortener)
