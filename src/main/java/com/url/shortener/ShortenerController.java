@@ -21,6 +21,17 @@ public class ShortenerController {
         this.service = service;
     }
 
+    private static HttpHeaders create() {
+        final HttpHeaders headers = new HttpHeaders();
+
+        headers.set("Access-Control-Allow-Origin", "*");
+        headers.set("Access-Control-Allow-Methods", "GET,PUT,POST");
+        headers.set("Access-Control-Allow-Headers", "Content-Type, Depth, User-Agent, X-File-Size, X-Requested-With, " +
+                "X-Requested-By, If-Modified-Since, X-File-Name, Cache-Control");
+
+        return headers;
+    }
+
     @PostMapping("/shorten-url")
     public ResponseEntity<Url> shortenUrl(@RequestBody String source) {
         final Url url = service.shorten(source);
@@ -49,15 +60,9 @@ public class ShortenerController {
         return System.getenv(envName);
     }
 
-    private static HttpHeaders create() {
-        final HttpHeaders headers = new HttpHeaders();
-
-        headers.set("Access-Control-Allow-Origin", "*");
-        headers.set("Access-Control-Allow-Methods", "GET,PUT,POST");
-        headers.set("Access-Control-Allow-Headers", "Content-Type, Depth, User-Agent, X-File-Size, X-Requested-With, " +
-                "X-Requested-By, If-Modified-Since, X-File-Name, Cache-Control");
-
-        return headers;
+    @RequestMapping(value = "/**", method = RequestMethod.OPTIONS)
+    public ResponseEntity handle() {
+        return new ResponseEntity(CORS_HEADERS, HttpStatus.OK);
     }
 
 }
