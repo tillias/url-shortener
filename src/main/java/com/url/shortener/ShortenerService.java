@@ -1,6 +1,6 @@
 package com.url.shortener;
 
-import com.url.shortener.infrastructure.DigestConfig;
+import com.url.shortener.infrastructure.DigestProperties;
 import com.url.shortener.infrastructure.UrlRepository;
 import com.url.shortener.infrastructure.UrlValidationException;
 import io.seruco.encoding.base62.Base62;
@@ -18,12 +18,12 @@ import java.util.Optional;
 public class ShortenerService {
 
     private UrlRepository repository;
-    private DigestConfig config;
+    private DigestProperties digestProperties;
 
     @Autowired
-    public ShortenerService(UrlRepository repository, DigestConfig config) {
+    public ShortenerService(UrlRepository repository, DigestProperties digestProperties) {
         this.repository = repository;
-        this.config = config;
+        this.digestProperties = digestProperties;
     }
 
     public Url shorten(String sourceUrl) {
@@ -69,7 +69,7 @@ public class ShortenerService {
         final Base62 base62 = Base62.createInstance();
 
 
-        int maxAttempts = config.getRandomMaxAttempts();
+        int maxAttempts = digestProperties.getRandomMaxAttempts();
         int iteration = 0; // fail fast is better
         String digest;
 
@@ -89,13 +89,13 @@ public class ShortenerService {
 
     private String generateRandomHash(UniformRandomProvider rnd, Base62 base62) {
 
-        final byte[] randomBytes = new byte[config.getRandomSize()];
+        final byte[] randomBytes = new byte[digestProperties.getRandomSize()];
         rnd.nextBytes(randomBytes);
 
         final byte[] encodedBytes = base62.encode(randomBytes);
 
         final String longHash = new String(encodedBytes);
-        return StringUtils.substring(longHash, 0, config.getLength());
+        return StringUtils.substring(longHash, 0, digestProperties.getRandomLength());
     }
 
     private Url enrichWithShortcut(Url source) {
@@ -103,7 +103,7 @@ public class ShortenerService {
             return null;
         }
 
-        source.setShortcut(config.getPrefix() + source.getId());
+        source.setShortcut(digestProperties.getPrefix() + source.getId());
         return source;
     }
 }

@@ -2,24 +2,14 @@ package com.url.shortener.infrastructure;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 
 @Configuration
-@PropertySource("classpath:digest.properties")
-@ConfigurationProperties(prefix = "digest")
-public class DigestConfig {
-    private int randomSize;
+@ConfigurationProperties("digest")
+public class DigestProperties {
     private int randomMaxAttempts;
-    private int length;
+    private int randomSize;
+    private int randomLength;
     private String prefix;
-
-    public int getRandomSize() {
-        return randomSize;
-    }
-
-    public void setRandomSize(int randomSize) {
-        this.randomSize = randomSize;
-    }
 
     public int getRandomMaxAttempts() {
         return randomMaxAttempts;
@@ -29,12 +19,20 @@ public class DigestConfig {
         this.randomMaxAttempts = randomMaxAttempts;
     }
 
-    public int getLength() {
-        return length;
+    public int getRandomSize() {
+        return randomSize;
     }
 
-    public void setLength(int length) {
-        this.length = length;
+    public void setRandomSize(int randomSize) {
+        this.randomSize = randomSize;
+    }
+
+    public int getRandomLength() {
+        return randomLength;
+    }
+
+    public void setRandomLength(int randomLength) {
+        this.randomLength = randomLength;
     }
 
     public String getPrefix() {
