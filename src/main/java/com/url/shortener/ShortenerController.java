@@ -5,6 +5,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.List;
 
@@ -53,6 +54,17 @@ public class ShortenerController {
         }
 
         return new ResponseEntity<>(url, CORS_HEADERS, HttpStatus.OK);
+    }
+
+    @GetMapping("redirect/{id}")
+    public RedirectView redirect(@PathVariable String id) {
+        final Url url = service.getUrlByID(id);
+
+        if (url != null) {
+            return new RedirectView(url.getSourceUrl());
+        }
+
+        return null; //TODO Implement URL Not found component with error message
     }
 
     @GetMapping("/get-env/{envName}")
