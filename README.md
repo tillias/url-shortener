@@ -1,1 +1,2 @@
 [![Build Status](https://travis-ci.com/tillias/url-shortener.svg?branch=master)](https://travis-ci.com/tillias/url-shortener)
+[![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=com.url%3Ashortener&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.url%3Ashortener)
