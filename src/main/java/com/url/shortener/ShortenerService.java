@@ -11,7 +11,6 @@ import org.apache.commons.validator.routines.UrlValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,11 +47,17 @@ public class ShortenerService {
         return enrichWithShortcut(url.orElse(null));
     }
 
+    /**
+     * Attempts to find already generated shortcut first to preserve storage
+     *
+     * @param sourceUrl to be shortened
+     * @return shortcut for sourceUrl
+     */
     private Url process(String sourceUrl) {
 
         final Url persistent = repository.findBySourceUrl(sourceUrl);
         if (persistent != null) {
-            return persistent;
+            return enrichWithShortcut(persistent);
         } else {
             final Url url = generateShortcut(sourceUrl);
             return repository.save(url);
