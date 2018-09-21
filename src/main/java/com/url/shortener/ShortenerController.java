@@ -35,8 +35,9 @@ public class ShortenerController {
     }
 
     @PostMapping("/shorten-url")
-    public ResponseEntity<Url> shortenUrl(@RequestBody String source) {
-        final Url url = service.shorten(source);
+    public ResponseEntity<Url> shortenUrl(@RequestBody String source, @RequestParam(value = "custom-hash", required =
+            false) String customHash) {
+        final Url url = service.shorten(source, customHash);
         return new ResponseEntity<>(url, CORS_HEADERS, HttpStatus.OK);
     }
 
