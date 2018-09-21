@@ -50,4 +50,9 @@ public class ShortenerController {
 
         throw new UrlNotFoundException(String.format("Shortened url with id=%s is not found", id));
     }
+
+    @DeleteMapping("url/{id}")
+    public void deleteUrl(@PathVariable String id) {
+        service.deleteUrl(id);
+    }
 }

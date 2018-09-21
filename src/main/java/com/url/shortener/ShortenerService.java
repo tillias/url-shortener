@@ -27,7 +27,7 @@ public class ShortenerService {
         this.digestProperties = digestProperties;
     }
 
-    public Url shorten(String sourceUrl, String customHash) {
+    Url shorten(String sourceUrl, String customHash) {
         final UrlValidator validator = new UrlValidator();
 
         if (validator.isValid(sourceUrl)) {
@@ -37,15 +37,19 @@ public class ShortenerService {
         }
     }
 
-    public List<Url> getUrls() {
+    List<Url> getUrls() {
         final List<Url> urls = repository.findAll();
         urls.forEach(this::enrichWithShortcut);
         return urls;
     }
 
-    public Url getUrlByID(String id) {
+    Url getUrlByID(String id) {
         final Optional<Url> url = repository.findById(id);
         return enrichWithShortcut(url.orElse(null));
+    }
+
+    void deleteUrl(String id) {
+        repository.deleteById(id);
     }
 
     private Url process(String sourceUrl, String customHash) {
