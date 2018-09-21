@@ -1,5 +1,6 @@
 package com.url.shortener;
 
+import com.url.shortener.infrastructure.UrlNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -64,7 +65,7 @@ public class ShortenerController {
             return new RedirectView(url.getSourceUrl());
         }
 
-        return null; //TODO Implement URL Not found component with error message
+        throw new UrlNotFoundException(String.format("Shortened url with id=%s is not found", id));
     }
 
     @GetMapping("/get-env/{envName}")
