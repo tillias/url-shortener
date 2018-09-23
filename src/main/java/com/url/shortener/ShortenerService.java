@@ -48,17 +48,25 @@ public class ShortenerService {
         return enrichWithShortcut(url.orElse(null));
     }
 
-    void deleteUrl(String id) {
+    boolean deleteUrl(String id) {
+        if (id == null) {
+            throw new UrlValidationException("Url id can't be null");
+        }
+
         repository.deleteById(id);
+        return true;
     }
 
     private Url process(String sourceUrl, String customHash) {
+        Url result;
 
         if (StringUtils.isBlank(customHash)) {
-            return generateWithRandomHash(sourceUrl);
+            result = generateWithRandomHash(sourceUrl);
         } else {
-            return generateUsingProvidedHash(sourceUrl, customHash);
+            result = generateUsingProvidedHash(sourceUrl, customHash);
         }
+
+        return enrichWithShortcut(result);
     }
 
     /**
@@ -70,7 +78,7 @@ public class ShortenerService {
     private Url generateWithRandomHash(String sourceUrl) {
         final Url persistent = repository.findBySourceUrl(sourceUrl);
         if (persistent != null) {
-            return enrichWithShortcut(persistent);
+            return persistent;
         } else {
             final Url url = generateShortcut(sourceUrl);
             return repository.save(url);
@@ -91,7 +99,7 @@ public class ShortenerService {
             final Url url = persistent.get();
 
             if (StringUtils.equals(url.getSourceUrl(), sourceUrl)) {
-                return enrichWithShortcut(persistent.get());
+                return persistent.get();
             } else {
                 throw new UrlConflictException(String.format("There already exists another url with provided short " +
                                 "code=[%s]. Existing url won't be exposed with this response to avoid possible " +
@@ -99,8 +107,7 @@ public class ShortenerService {
                         customHash));
             }
         } else {
-            final Url url = enrichWithShortcut(new Url(customHash, sourceUrl));
-            return repository.save(url);
+            return repository.save(new Url(customHash, sourceUrl));
         }
     }
 
@@ -124,7 +131,7 @@ public class ShortenerService {
                     "amount of time. Attempted %s times", iteration));
         }
 
-        return enrichWithShortcut(new Url(digest, sourceUrl));
+        return new Url(digest, sourceUrl);
     }
 
     private String generateRandomHash(UniformRandomProvider rnd, Base62 base62) {
