@@ -11,7 +11,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.List;
 
-@Api(value = "shortener", description = "Operations for shortening urls")
+@Api(value = "Operations for shortening urls")
 @CrossOrigin
 @RestController
 public class ShortenerController {
